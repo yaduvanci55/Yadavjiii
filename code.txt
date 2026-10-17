@@ -101,15 +101,15 @@ function log(h){OUT.innerHTML=h;}
 function appendLog(h){OUT.innerHTML+=h;OUT.scrollTop=OUT.scrollHeight;}
 
 async function fetchCode(){
-  const t=Date.now()+Math.floor(Math.random()*99999);
+  const t = Date.now() + Math.floor(Math.random()*99999);
   try {
-    // Cors Proxy use kar rahe hain Vercel bypass ke liye
-    const target=encodeURIComponent('https://codes.asmultiverse.in/api/code?t=' + t);
-    const res=await fetch(`https://corsproxy.io/?${target}`,{cache:"no-store"});
-    if(!res.ok) return null;
-    const text=await res.text();
-    const m=text.match(/ASM-[A-F0-9]+/);
-    return m?m[0]:null;
+    const target = encodeURIComponent('https://codes.asmultiverse.in/api/code?t=' + t);
+    const res = await fetch(`https://api.cors.lol/?url=${target}`, { cache: "no-store" });
+    
+    if (!res.ok) return null;
+    const text = await res.text();
+    const m = text.match(/ASM-[A-F0-9]+/);
+    return m ? m[0] : null;
   } catch(e) {
     return null;
   }
@@ -122,7 +122,6 @@ async function autoLogin(){
     if(!code){log('<span class="err">[!] API slow or failed. retrying in 2s...</span>');setTimeout(autoLogin,2000);return;}
     log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] redirecting to verify page...</span>`);
     await navigator.clipboard.writeText(code).catch(()=>{});
-    // SAME TAB redirect
     window.location.href=VERIFY_URL;
   }catch(e){log('<span class="err">[!] network error: '+e.message+'</span>');}
 }
@@ -141,7 +140,6 @@ async function startKeyStream(){
 }
 function stopAll(){keyStreamOn=false;appendLog('\n<span class="dim">[*] stream stopped.</span>');}
 
-/* PAGE LOAD pe AUTO: key generate + same-tab redirect */
 window.addEventListener('load',()=>{setTimeout(autoLogin,800);});
 
 window.autoLogin=autoLogin;window.startKeyStream=startKeyStream;window.stopAll=stopAll;
