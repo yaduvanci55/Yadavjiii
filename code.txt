@@ -66,13 +66,13 @@
   .out .ok{color:var(--green);}
   .out .dim{color:var(--muted);}
   
-  /* Naya Open Button */
+  /* Naya Open Button (Ab ye <a> tag hai) */
   .open-btn {
     display: none; width: 100%; padding: 16px; margin-top: 15px; 
     background: #00ffb3; color: #001a12; border: none; border-radius: 10px;
     font-size: 16px; font-weight: bold; letter-spacing: 1px; cursor: pointer;
     font-family: inherit; text-transform: uppercase; text-align: center;
-    animation: pulseBtn 1.5s infinite;
+    animation: pulseBtn 1.5s infinite; text-decoration: none;
   }
   .open-btn:hover { background: #00b37d; }
   @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
@@ -106,8 +106,8 @@
       
       <div class="out" id="out"><span class="dim">[idle] tap START to generate...</span></div>
       
-      <!-- Naya button jo key banne ke baad dikhega -->
-      <button class="open-btn" id="openBtn" onclick="goToWebsite()">🌐 OPEN VERIFY WEBSITE</button>
+      <!-- Ab ye ek link (a tag) hai, jo direct open karega -->
+      <a class="open-btn" id="openBtn" href="#" target="_blank" rel="noopener">🌐 OPEN VERIFY WEBSITE</a>
       
     </div>
   </main>
@@ -149,7 +149,7 @@ async function fetchCode(){
 }
 
 async function autoLogin(){
-  OPEN_BTN.style.display = 'none'; // Button hide karo
+  OPEN_BTN.style.display = 'none';
   log('<span class="dim">[*] generating ASM key...</span>');
   try{
     const code=await fetchCode();
@@ -158,15 +158,11 @@ async function autoLogin(){
     log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] key copied to clipboard!</span>\n<span class="ok">[👉] Click the button below to open website.</span>`);
     await navigator.clipboard.writeText(code).catch(()=>{});
     
-    // Key banne ke baad button dikhao
+    // Button me link daalo aur dikhao
+    OPEN_BTN.href = VERIFY_URL;
     OPEN_BTN.style.display = 'block';
 
   }catch(e){log('<span class="err">[!] network error: '+e.message+'</span>');}
-}
-
-// Naye Button par click karne se ye chalega
-function goToWebsite() {
-  window.location.href = VERIFY_URL;
 }
 
 let keyStreamOn=false,keyCount=0;
@@ -184,7 +180,7 @@ async function startKeyStream(){
 }
 function stopAll(){keyStreamOn=false;appendLog('\n<span class="dim">[*] stream stopped.</span>');}
 
-window.autoLogin=autoLogin;window.startKeyStream=startKeyStream;window.stopAll=stopAll;window.goToWebsite=goToWebsite;
+window.autoLogin=autoLogin;window.startKeyStream=startKeyStream;window.stopAll=stopAll;
 </script>
 </body>
 </html>
