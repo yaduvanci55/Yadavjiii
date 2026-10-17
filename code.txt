@@ -111,16 +111,20 @@ async function fetchCode(){
   return m?m[0]:null;
 }
 
-async function autoLogin(){
-  log('<span class="dim">[*] generating ASM key...</span>');
-  try{
-    const code=await fetchCode();
-    if(!code){log('<span class="err">[!] API slow or failed. retrying in 2s...</span>');setTimeout(autoLogin,2000);return;}
-    log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] redirecting to verify page...</span>`);
-    await navigator.clipboard.writeText(code).catch(()=>{});
-    // SAME TAB redirect
-    window.location.href=VERIFY_URL;
-  }catch(e){log('<span class="err">[!] network error: '+e.message+'</span>');}
+async function fetchCode(){
+  const t = Date.now() + Math.floor(Math.random()*99999);
+  try {
+    const res = await fetch(`/api/code?t=${t}`, { 
+      cache: "no-store",
+      signal: AbortSignal.timeout(10000) 
+    });
+    if (!res.ok) return null;
+    const text = await res.text();
+    const m = text.match(/ASM-[A-F0-9]+/);
+    return m ? m[0] : null;
+  } catch(e) {
+    return null;
+  }
 }
 
 let keyStreamOn=false,keyCount=0;
