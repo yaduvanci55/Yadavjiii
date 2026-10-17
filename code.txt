@@ -134,19 +134,13 @@ async function autoLogin(){
   try{
     const code=await fetchCode();
     if(!code){log('<span class="err">[!] API slow or failed. Please try again.</span>');return;}
+    
     log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] redirecting to verify page...</span>`);
     await navigator.clipboard.writeText(code).catch(()=>{});
     
-    // Fix: Naye tab me open karne ki koshish karega
-    const newTab = window.open(VERIFY_URL, "_blank");
-    
-    // Agar browser block kar de, toh same tab me khol dega
-    if (!newTab || newTab.closed || typeof newTab.closed == 'undefined') {
-        log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] popup blocked, opening in same tab...</span>`);
-        setTimeout(() => {
-            window.location.href = VERIFY_URL;
-        }, 500);
-    }
+    // Same tab me open karega, koi blank page nahi aayega
+    window.location.href = VERIFY_URL;
+
   }catch(e){log('<span class="err">[!] network error: '+e.message+'</span>');}
 }
 
