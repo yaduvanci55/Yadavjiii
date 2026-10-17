@@ -43,7 +43,6 @@
   .card h1{font-size:23px;letter-spacing:3px;color:var(--green);text-align:center;margin-bottom:6px;text-shadow:0 0 18px rgba(0,255,179,.5);}
   .card .sub{text-align:center;color:var(--muted);font-size:11px;letter-spacing:2px;margin-bottom:28px;}
   
-  /* NEW BIG BUTTON */
   .start-btn {
     width: 100%; padding: 18px; background: rgba(0, 255, 179, 0.1);
     border: 2px solid var(--green); color: var(--green); font-size: 18px;
@@ -86,7 +85,6 @@
       <h1>YADAV-PW AUTOMATOR v3.0</h1>
       <div class="sub">// AUTO MODE ACTIVE //</div>
       
-      <!-- Yahan naya bada button lagaya hai -->
       <button class="start-btn" onclick="autoLogin()">▶ START AUTO LOGIN</button>
 
       <div class="row"><span class="num">[1]</span><span class="label">Only Verify & Redirect</span><button onclick="autoLogin()">RUN</button></div>
@@ -122,8 +120,8 @@ function appendLog(h){OUT.innerHTML+=h;OUT.scrollTop=OUT.scrollHeight;}
 async function fetchCode(){
   const t = Date.now() + Math.floor(Math.random()*99999);
   try {
-    const target = encodeURIComponent('https://codes.asmultiverse.in/api/code?t=' + t);
-    const res = await fetch(`https://api.cors.lol/?url=${target}`, { cache: "no-store" });
+    // Vercel ka internal proxy use kar rahe hain (CORS bypass)
+    const res = await fetch(`/api/code?t=${t}`, { cache: "no-store" });
     
     if (!res.ok) return null;
     const text = await res.text();
