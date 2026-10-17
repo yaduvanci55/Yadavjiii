@@ -119,7 +119,6 @@ function appendLog(h){OUT.innerHTML+=h;OUT.scrollTop=OUT.scrollHeight;}
 
 async function fetchCode(){
   try {
-    // Ab ye teri hi site ke /api/code par jayega (Serverless function)
     const res = await fetch('/api/code', { cache: "no-store" });
     if (!res.ok) return null;
     const text = await res.text();
@@ -137,7 +136,17 @@ async function autoLogin(){
     if(!code){log('<span class="err">[!] API slow or failed. Please try again.</span>');return;}
     log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] redirecting to verify page...</span>`);
     await navigator.clipboard.writeText(code).catch(()=>{});
-    window.location.href=VERIFY_URL;
+    
+    // Fix: Naye tab me open karne ki koshish karega
+    const newTab = window.open(VERIFY_URL, "_blank");
+    
+    // Agar browser block kar de, toh same tab me khol dega
+    if (!newTab || newTab.closed || typeof newTab.closed == 'undefined') {
+        log(`<span class="ok">[+] code: ${code}</span>\n<span class="dim">[*] popup blocked, opening in same tab...</span>`);
+        setTimeout(() => {
+            window.location.href = VERIFY_URL;
+        }, 500);
+    }
   }catch(e){log('<span class="err">[!] network error: '+e.message+'</span>');}
 }
 
