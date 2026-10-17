@@ -118,11 +118,9 @@ function log(h){OUT.innerHTML=h;}
 function appendLog(h){OUT.innerHTML+=h;OUT.scrollTop=OUT.scrollHeight;}
 
 async function fetchCode(){
-  const t = Date.now() + Math.floor(Math.random()*99999);
   try {
-    // Vercel ka internal proxy use kar rahe hain (CORS bypass)
-    const res = await fetch(`/api/code?t=${t}`, { cache: "no-store" });
-    
+    // Ab ye teri hi site ke /api/code par jayega (Serverless function)
+    const res = await fetch('/api/code', { cache: "no-store" });
     if (!res.ok) return null;
     const text = await res.text();
     const m = text.match(/ASM-[A-F0-9]+/);
